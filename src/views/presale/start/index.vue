@@ -317,6 +317,7 @@ export default {
                 },1500);
                 setTimeout(()=>{
                     this.loadingState = false;
+                    this.getUserLock();
                     //window.location.reload();
 
                 },2000)

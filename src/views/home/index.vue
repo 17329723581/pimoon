@@ -354,7 +354,6 @@ export default {
             100%{
                 opacity: 1;
                 -webkit-transform: translateY(0px);
-                
             }
         }
         -webkit-transform: translateY(0px);

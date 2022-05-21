@@ -102,9 +102,12 @@
         <div class="rceive-container-main">
             <!-- rceive布局容器 -->
             <v-container class="rceive-container">
-                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == true && isInvited[1] == true" style="background:#808080">{{$t("public.rceive")}}</v-btn>
-                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == false && isInvited[1] == true" @click="rceiveAirdrop">{{$t("public.rceive")}}</v-btn>
-                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == false && isInvited[1] == false" style="background:#808080">{{$t("public.not_available")}}</v-btn>
+                <!-- 已領取 -->
+                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == true && isInvited[1] == true && receiveAirdropStatus == true" style="background:#808080">{{$t("public.rceive")}}</v-btn>
+                <!-- 未領取 可領取 -->
+                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == false && isInvited[1] == true && receiveAirdropStatus == false" @click="rceiveAirdrop">{{$t("public.rceive")}}</v-btn>
+                <!-- 不可領取 -->
+                <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != '' && airdropStatus == false && isInvited[1] == false && receiveAirdropStatus == true" style="background:#808080">{{$t("public.not_available")}}</v-btn>
             </v-container>
         </div>
         <!-- copy-connection布局容器main -->
@@ -121,7 +124,8 @@
                         </div>
                     </div>
                     <div class="link-copy">
-                        <v-btn v-clipboard:copy="storeInviteLink[0]" v-clipboard:success="onCopy">Copy</v-btn>
+                        <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != ''" v-clipboard:copy="storeInviteLink[0]" v-clipboard:success="onCopy">Copy</v-btn>
+                        <v-btn v-else style="background:#808080">Copy</v-btn>
                     </div>
                     <div class="link-explain">
                         <span>
@@ -242,6 +246,9 @@ export default {
 			myInvitationCount: 0,
             // 邀请奖励数量
 			invitationRewardsCount: 0,
+            // 领取空投状态
+            receiveAirdropStatus:false,
+
         }
     },
     components: {
@@ -286,8 +293,9 @@ export default {
         }
     },
     created() {
-        //this.myInvites(this.address)
+        this.updateInvitationLink(this.address);
         this.getParticipateUpPresaleRandom();
+        this.getReceiveAirdropStatus();
         setTimeout(()=>{
             this.getPimoonAirdropTotalCount();
         },1500)
@@ -368,7 +376,6 @@ export default {
                 // 声明变量:我的邀请数量
                 let myInvitationCount = new this.$BigNumber(0);
                 // 循环:全局邀请列表
-                console.log(this.storeInviteList)
                 for (let i = 0; i < this.storeInviteList.length; i++) {
                     const userLockList = await PerSaleObj.methods.getUserLock(this.storeInviteList[i]).call();
                     // 判断当前用户大于0
@@ -398,9 +405,9 @@ export default {
                 this.invitationRewardsCount =  Object.is(Number(rewardsCount), NaN)?0:rewardsCount;
         },
         // 领取空投
-        rceiveAirdrop(){
+        async rceiveAirdrop(){
             this.loadingState = true;
-            PerSaleObj.methods.airdrop().send({
+            await PerSaleObj.methods.airdrop().send({
                 from: this.address,
                 value: web3.utils.toWei("0.0025"),
             }).then(()=>{
@@ -445,6 +452,11 @@ export default {
                         status: false,
                     }
                 },1500);
+		},
+        // 获取领取空投状态
+        async getReceiveAirdropStatus(){
+			const status = await PerSaleObj.methods.getIsAirdrop(this.address).call()
+			this.receiveAirdropStatus = status
 		},
     }
 };

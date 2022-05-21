@@ -28,7 +28,7 @@ export default new Vuex.Store({
     // 邀请链接
     storeInviteLink: [],
     // 结束时间
-    deadline:1653554480000, //9999999999999
+    deadline:1651485600000, //9999999999999
     // 邀请人地址
     inviteeAddress:"0x456463b185a447552b31516c2cb729b9c90D531B"
   },

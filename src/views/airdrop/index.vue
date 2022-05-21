@@ -151,7 +151,8 @@
                         </div>
                     </div>
                     <div class="link-copy">
-                        <v-btn v-clipboard:copy="storeInviteLink[0]" v-clipboard:success="onCopy">{{$t("public.copy")}}</v-btn>
+                        <v-btn v-if="storeInviteLink[0].split('?')[1].split('&')[0].split('=')[1] != ''" v-clipboard:copy="storeInviteLink[0]" v-clipboard:success="onCopy">Copy</v-btn>
+                        <v-btn v-else style="background:#808080">Copy</v-btn>
                     </div>
                     <div class="link-explain">
                         <span>

@@ -55,15 +55,15 @@
                     <v-img  max-height="24" max-width="24" class="menuClick" src="@/assets/close.svg" @click="menuStatus=true"></v-img>
                 </div>
                 <div class="line"></div>
-                <div class="title" @click="$router.push('/')">
+                <div class="title" @click="mobileOutside('/')">
                     {{$t('topMneBar.home')}}
                 </div>
                 <div class="line"></div>
-                <div class="title" @click="$router.push('/presale')">
+                <div class="title" @click="mobileOutside('/presale')">
                     {{$t('topMneBar.presale')}}
                 </div>
                 <div class="line"></div>
-                <div class="title" @click="$router.push('/airdrop')">
+                <div class="title" @click="mobileOutside('/airdrop')">
                     {{$t('topMneBar.airdrop')}}
                 </div>
                 <div class="line"></div>
@@ -155,6 +155,14 @@ export default {
         isMobile() {
             let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
             return flag;
+        },
+        // 模拟手机内部点击
+        mobileOutside(e){
+            if(e!=this.$route.path){
+                this.$router.push(e)
+            }else{
+                this.menuStatus = false;
+            }
         }
     },
 };
